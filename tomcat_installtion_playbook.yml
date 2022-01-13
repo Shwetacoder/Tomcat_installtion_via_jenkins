@@ -1,14 +1,23 @@
 ---
-- name: Tomcat deployment playbook
-  hosts: tomcat-nodes       # Inventory hosts group / server to act on
-  become: yes               # If to escalate privilege
-  become_method: sudo       # Set become method
-  remote_user: root         # Update username for remote server
-  vars:
-    tomcat_ver: 9.0.52                          # Tomcat version to install
-    ui_manager_user: manager                    # User who can access the UI manager section only
-    ui_manager_pass: Str0ngManagerP@ssw3rd      # UI manager user password
-    ui_admin_username: admin                    # User who can access bpth manager and admin UI sections
-    ui_admin_pass: Str0ngAdminP@ssw3rd          # UI admin password
-  roles:
-    - tomcat
+- name: install tomcat server
+  hosts: all
+  become: true
+
+  tasks:
+  - name: Install OpenJDK
+    apt:
+      name: openjdk-11-jre-headless
+
+  - name: download tomcat server packages
+    get_url:
+      url: http://mirrors.estointernet.in/apache/tomcat/tomcat-9/v9.0.44/bin/apache-tomcat-9.0.44.tar.gz
+      dest: /usr/local
+
+  - name: extract tomcat packages
+    unarchive:
+      src: /usr/local/apache-tomcat-9.0.44.tar.gz
+      dest: /usr/local
+      remote_src: yes
+
+  - name: start tomcat services
+    shell: nohup /usr/local/apache-tomcat-9.0.44/bin/startup.sh
