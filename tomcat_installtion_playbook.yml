@@ -6,7 +6,7 @@
   tasks:
   - name: Install OpenJDK
     yum:
-      name: openjdk-11-jre-headless
+      name: java-1.8.0-openjdk
 
   - name: download tomcat server packages
     get_url:
